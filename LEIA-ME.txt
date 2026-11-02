@@ -1,17 +1,33 @@
-SONORA — primeira versão PWA
+SONORA — player PWA com biblioteca local e sincronização privada
 
-O que já funciona:
-- Interface adaptada para celular.
-- Seleção de arquivos de áudio do dispositivo.
-- Reprodução, pausa e busca na faixa.
-- Biblioteca temporária durante a sessão.
-- Estrutura PWA com manifest e service worker para instalação/offline do app shell.
+O que esta versão faz
+- Mantém o visual e o player do SONORA, com navegação para início, biblioteca, conta e YouTube.
+- Guarda no próprio navegador os arquivos adicionados, para continuar ouvindo neste aparelho sem internet.
+- Com Supabase configurado, cria conta/entrar por e-mail e senha e envia os novos arquivos para uma pasta privada da conta.
+- Mostra músicas da conta em outros aparelhos depois do login; arquivos da nuvem precisam de internet para tocar.
+- O botão “Enviar músicas deste aparelho” envia à conta arquivos que já estavam salvos localmente.
+- A senha é enviada diretamente ao Supabase Auth; não é escrita no código nem salva pelo SONORA.
 
-Limitações desta versão:
-- Os arquivos escolhidos pelo seletor não são copiados para armazenamento permanente do app; selecione-os novamente após fechar/reabrir.
-- Ainda não há playlists persistentes, importação de pastas ou controle de reprodução em tela bloqueada garantido.
-- YouTube abre pelo serviço oficial. Não há download de áudio de vídeos protegidos.
-- Para instalar como PWA, publique esta pasta em um endereço HTTPS (por exemplo, GitHub Pages). Abrir index.html como arquivo local não habilita service worker/instalação PWA.
+Configuração do Supabase
+1. Crie um projeto Supabase e abra Authentication > URL Configuration.
+2. Defina Site URL como https://christopher184848.github.io/sonora/ e adicione essa URL à Redirect URLs.
+3. No painel API Keys (ou Project Settings > API), copie Project URL e a chave publishable/anon.
+4. Preencha supabaseUrl e supabaseAnonKey em config.js. Essa chave pública pode ficar no site; nunca use service_role/secret key.
+5. Abra SQL Editor, cole e execute supabase-setup.sql. Ele cria o bucket privado sonora-musicas, com limite de 100 MB por arquivo, e políticas que isolam cada conta na pasta do seu ID.
+6. Em Authentication > Providers > Email, deixe e-mail habilitado. Se confirmação de e-mail estiver ligada, configure também o envio de e-mail no painel; quem se cadastra precisa confirmar pelo link.
+7. Publique os arquivos desta pasta na raiz da branch main do repositório Christopher184848/sonora, mantendo index.html, config.js, sw.js, manifest.webmanifest e icon.svg juntos. GitHub Pages deve publicar main / (root).
 
-Próximo passo:
-Hospedar a pasta em HTTPS e abrir o link no Chrome Android. No menu ⋮, escolha "Instalar app" ou "Adicionar à tela inicial".
+Publicação pelo GitHub
+- O repositório atual usa GitHub Pages e tem os cinco arquivos originais na raiz.
+- Depois de publicar, abra https://christopher184848.github.io/sonora/ e atualize o app instalado para buscar a nova versão.
+- Para produção, mantenha as políticas do SQL e o bucket como privados. Nunca coloque a chave service_role no config.js.
+
+Privacidade e offline
+- As músicas locais ficam no armazenamento IndexedDB deste navegador e não são enviadas sem login.
+- Depois do login, arquivos escolhidos são enviados à conta; arquivos locais antigos podem ser enviados pelo botão de sincronização.
+- Cada objeto usa o ID do usuário como primeira pasta, e as políticas RLS limitam leitura, envio e exclusão a essa conta.
+- O app shell continua em cache para abrir offline. Arquivos da nuvem só tocam com conexão; arquivos locais salvos no aparelho continuam disponíveis.
+- O YouTube abre o serviço oficial; este app não extrai áudio de vídeos protegidos.
+
+Validação
+- A cópia de trabalho foi comparada com os arquivos públicos existentes. A conexão de Auth/Storage não pode ser testada até que os dados do seu projeto Supabase sejam configurados.

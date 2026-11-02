@@ -9,44 +9,255 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>SONORA</title>
 <style>
-:root{color-scheme:dark;--bg:#101014;--panel:#1b1a22;--muted:#a6a2b2;--purple:#a78bfa;--line:#302d39}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font:15px system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top) 16px calc(110px + env(safe-area-inset-bottom));}
-header{display:flex;justify-content:space-between;align-items:center;padding:18px 2px 22px}.brand{font-size:25px;font-weight:900;letter-spacing:2px}.brand span{color:var(--purple)}.tag{font-size:10px;color:var(--muted);letter-spacing:2px}
-h2{font-size:18px;margin:26px 0 12px}.hero{padding:20px;border-radius:22px;background:linear-gradient(135deg,#33234f,#17151f 70%);border:1px solid #4b3a69}.hero small{color:#d1c5ef}.hero h1{font-size:25px;line-height:1.15;margin:9px 0}.hero p{color:#d0c9dc;margin:0 0 16px}
-button,.filelabel{border:0;border-radius:14px;background:var(--purple);color:#171221;padding:12px 16px;font-weight:750;font-size:14px;cursor:pointer}.secondary{background:#302b3b;color:white;border:1px solid #484153}.row{display:flex;gap:10px;align-items:center}.row>*{flex:1}.stats{display:flex;gap:10px;margin-top:15px}.stat{background:#17161d;padding:12px;border:1px solid var(--line);border-radius:14px;flex:1}.stat b{display:block;font-size:18px}.stat span{color:var(--muted);font-size:11px}
-.track{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);padding:11px;border-radius:15px;margin:8px 0}.cover{width:45px;height:45px;border-radius:10px;background:linear-gradient(135deg,#8c5de8,#29213b);display:grid;place-items:center;font-size:20px}.trackinfo{flex:1;min-width:0}.trackinfo b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trackinfo small{color:var(--muted)}.track button{padding:9px 12px;flex:0 0 auto}
-input[type=file]{display:none}.empty{color:var(--muted);font-size:13px;line-height:1.5;padding:15px;background:#17161d;border:1px dashed #454050;border-radius:14px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#17161df2;backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:12px 8px calc(12px + env(safe-area-inset-bottom));z-index:5}nav button{background:transparent;color:var(--muted);padding:7px;font-size:12px}nav button.active{color:var(--purple)}
-.player{position:fixed;bottom:72px;left:10px;right:10px;background:#292435;border:1px solid #514568;border-radius:16px;padding:10px 13px;display:none;z-index:4}.player-top{display:flex;align-items:center;gap:10px}.player-title{flex:1;min-width:0}.player-title b,.player-title small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.player-title small{color:var(--muted)}.player button{padding:8px 11px}.player input{width:100%;accent-color:var(--purple);margin-top:8px}
-section[hidden]{display:none}
-a{color:#c9b5ff}
+:root{color-scheme:dark;--bg:#101014;--panel:#1b1a22;--muted:#a6a2b2;--purple:#a78bfa;--line:#302d39;--green:#77dfa5;--red:#ff9b9b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font:15px system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top) 16px calc(100px + env(safe-area-inset-bottom));max-width:760px;margin-inline:auto}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 2px 22px;gap:12px}.brand{font-size:25px;font-weight:900;letter-spacing:2px}.brand span{color:var(--purple)}.tag{font-size:10px;color:var(--muted);letter-spacing:2px}
+h1{font-size:25px;line-height:1.15;margin:9px 0}h2{font-size:18px;margin:26px 0 12px}.hero,.panel{padding:20px;border-radius:22px;background:linear-gradient(135deg,#33234f,#17151f 70%);border:1px solid #4b3a69}.hero small{color:#d1c5ef}.hero p{color:#d0c9dc;margin:0 0 16px;line-height:1.5}.panel{margin-top:14px;background:#191720;border-color:var(--line);padding:16px}.panel h2{margin:0 0 10px}.muted{color:var(--muted)}
+button,.filelabel{border:0;border-radius:14px;background:var(--purple);color:#171221;padding:12px 16px;font-weight:750;font-size:14px;cursor:pointer}.secondary{background:#302b3b;color:white;border:1px solid #484153}.smallbtn{padding:9px 12px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.accountbar{display:flex;align-items:center;gap:8px}.accountbar button{padding:9px 12px}.useremail{max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:12px}
+input{font:inherit;color:#fff}input[type=email],input[type=password]{width:100%;padding:12px;border-radius:12px;border:1px solid #484153;background:#111016;margin:5px 0 12px}label.field{font-size:12px;color:#d7d1df}input[type=file]{display:none}.notice{font-size:13px;line-height:1.5;color:#ddd7e6;margin:10px 0 0}.status{font-size:12px;color:var(--muted);min-height:18px;margin:8px 0}.status.error{color:var(--red)}.status.ok{color:var(--green)}.empty{color:var(--muted);font-size:13px;line-height:1.5;padding:15px;background:#17161d;border:1px dashed #454050;border-radius:14px}
+.stats{display:flex;gap:10px;margin-top:15px}.stat{background:#17161d;padding:12px;border:1px solid var(--line);border-radius:14px;flex:1}.stat b{display:block;font-size:18px}.stat span{color:var(--muted);font-size:11px}.track{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);padding:11px;border-radius:15px;margin:8px 0}.cover{width:45px;height:45px;flex:0 0 45px;border-radius:10px;background:linear-gradient(135deg,#8c5de8,#29213b);display:grid;place-items:center;font-size:20px}.trackinfo{flex:1;min-width:0}.trackinfo b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trackinfo small{color:var(--muted)}.track button{padding:9px 12px;flex:0 0 auto}
+nav{position:fixed;bottom:0;left:0;right:0;background:#17161df2;backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:center;gap:20px;padding:10px 8px calc(10px + env(safe-area-inset-bottom));z-index:5}nav button{background:transparent;color:var(--muted);padding:7px 18px;font-size:12px}nav button.active{color:var(--purple)}.player{position:fixed;bottom:66px;left:max(10px,calc((100vw - 740px)/2));right:max(10px,calc((100vw - 740px)/2));background:#292435;border:1px solid #514568;border-radius:16px;padding:10px 13px;display:none;z-index:4}.player-top{display:flex;align-items:center;gap:10px}.player-title{flex:1;min-width:0}.player-title b,.player-title small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.player-title small{color:var(--muted)}.player button{padding:8px 11px}.player input{width:100%;accent-color:var(--purple);margin-top:8px}section[hidden]{display:none}a{color:#c9b5ff}button:focus-visible,.filelabel:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:2px}
 </style>
+<script src="./config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<header><div><div class="brand">SONO<span>RA</span></div><div class="tag">YOUR MUSIC. YOUR WORLD.</div></div><div aria-label="Áudio">♫</div></header>
+<header><div><div class="brand">SONO<span>RA</span></div><div class="tag">YOUR MUSIC. YOUR WORLD.</div></div><div class="accountbar" id="accountbar"><span class="useremail" id="useremail"></span><button class="secondary" id="accountButton" type="button">Entrar</button></div></header>
 <main>
 <section id="home">
- <div class="hero"><small>BEM-VINDO AO SEU ESPAÇO</small><h1>Suas músicas.<br>Do seu jeito.</h1><p>Uma biblioteca simples para ouvir seus próprios arquivos, até sem internet.</p><label class="filelabel" for="audioFiles">＋ Adicionar músicas</label><input id="audioFiles" type="file" accept="audio/*" multiple></div>
- <div class="stats"><div class="stat"><b id="songCount">0</b><span>MÚSICAS</span></div><div class="stat"><b>LOCAL</b><span>SUA BIBLIOTECA</span></div></div>
- <h2>Tocados recentemente</h2><div id="recent" class="empty">Suas músicas tocadas aparecerão aqui.</div>
+  <div class="hero"><small>SUA MÚSICA EM QUALQUER LUGAR</small><h1>Suas músicas.<br>Do seu jeito.</h1><p>Entre na sua conta para enviar arquivos privados e ouvir sua biblioteca em outros aparelhos. As músicas deste dispositivo também ficam disponíveis offline.</p><label class="filelabel" for="audioHome">＋ Adicionar músicas</label><input id="audioHome" type="file" accept="audio/*,.mp3,.m4a,.aac,.ogg,.opus,.wav,.flac,.webm" multiple></div>
+  <div class="stats"><div class="stat"><b id="songCount">0</b><span>MÚSICAS</span></div><div class="stat"><b id="libraryMode">LOCAL</b><span>DA SUA BIBLIOTECA</span></div></div>
+  <h2>Tocada recentemente</h2><div id="recent" class="empty">Suas músicas tocadas aparecerão aqui.</div>
 </section>
-<section id="library" hidden><h2>Sua biblioteca</h2><label class="filelabel" for="audioFiles2">＋ Adicionar músicas</label><input id="audioFiles2" type="file" accept="audio/*" multiple><div id="tracks" style="margin-top:15px" class="empty">Nenhuma música adicionada ainda. Selecione arquivos de áudio do seu celular.</div></section>
-<section id="youtube" hidden><h2>Explorar no YouTube</h2><div class="empty">A pesquisa e reprodução de vídeos do YouTube precisam usar os recursos oficiais do YouTube. Esta primeira versão não baixa áudio de vídeos protegidos. Você pode abrir o YouTube e salvar conteúdo offline quando o próprio serviço oferecer essa opção.</div><p><a href="https://m.youtube.com/" target="_blank" rel="noopener">Abrir YouTube</a></p></section>
+<section id="library" hidden><h2>Sua biblioteca</h2><div class="row"><label class="filelabel" for="audioLibrary">＋ Adicionar músicas</label><input id="audioLibrary" type="file" accept="audio/*,.mp3,.m4a,.aac,.ogg,.opus,.wav,.flac,.webm" multiple><button class="secondary" id="syncLocal" type="button" hidden>Enviar músicas deste aparelho</button></div><p class="notice" id="libraryHelp">Arquivos adicionados ficam guardados neste aparelho. Ao entrar na conta, os próximos arquivos também são enviados para sua biblioteca privada.</p><div id="tracks" style="margin-top:15px" class="empty">Nenhuma música adicionada ainda. Escolha arquivos de áudio do seu aparelho.</div><div id="libraryStatus" class="status" role="status" aria-live="polite"></div></section>
+<section id="account" hidden><h2>Conta SONORA</h2><div class="panel"><p id="configHint" class="notice">Faça login ou crie uma conta para sincronizar suas músicas.</p><form id="authForm"><label class="field" for="email">E-mail</label><input id="email" type="email" autocomplete="email" required><label class="field" for="password">Senha</label><input id="password" type="password" autocomplete="current-password" minlength="8" required><div class="row"><button id="submitAuth" type="submit">Entrar</button><button id="modeAuth" class="secondary" type="button">Criar conta</button></div></form><div id="authMessage" class="status" role="status" aria-live="polite"></div><button id="signOut" class="secondary" type="button" hidden>Sair da conta</button></div></section>
+<section id="youtube" hidden><h2>Explorar no YouTube</h2><div class="empty">O SONORA não baixa áudio de vídeos protegidos. Abra o YouTube e use os recursos oficiais quando disponíveis.</div><p><a href="https://m.youtube.com/" target="_blank" rel="noopener noreferrer">Abrir YouTube</a></p></section>
 </main>
-<div class="player" id="player"><div class="player-top"><div class="cover">♫</div><div class="player-title"><b id="nowTitle">Nenhuma música</b><small id="nowSub">SONORA PLAYER</small></div><button class="secondary" id="playPause">▶</button></div><input id="seek" type="range" min="0" max="100" value="0"></div>
-<audio id="audio"></audio>
-<nav><button class="active" data-tab="home">⌂<br>Início</button><button data-tab="library">♫<br>Biblioteca</button><button data-tab="youtube">◉<br>YouTube</button></nav>
+<div class="player" id="player"><div class="player-top"><div class="cover">♫</div><div class="player-title"><b id="nowTitle">Nenhuma música</b><small id="nowSub">SONORA PLAYER</small></div><button class="secondary" id="playPause" type="button" aria-label="Reproduzir ou pausar">▶</button></div><input id="seek" type="range" min="0" max="100" value="0" aria-label="Posição da música"></div>
+<audio id="audio" preload="metadata"></audio>
+<nav aria-label="Navegação principal"><button class="active" data-tab="home" type="button">⌂<br>Início</button><button data-tab="library" type="button">♫<br>Biblioteca</button><button data-tab="account" type="button">♙<br>Conta</button><button data-tab="youtube" type="button">◉<br>YouTube</button></nav>
 <script>
-const audio=document.getElementById('audio'), filesInput=[document.getElementById('audioFiles'),document.getElementById('audioFiles2')];
-let songs=[],current=-1;
-function addFiles(list){for(const f of list){if(f.type.startsWith('audio/'))songs.push({file:f,url:URL.createObjectURL(f)});}render();}
-filesInput.forEach(el=>el.addEventListener('change',e=>addFiles(e.target.files)));
-function render(){document.getElementById('songCount').textContent=songs.length;const tracks=document.getElementById('tracks');tracks.className=songs.length?'':'empty';tracks.innerHTML='';if(!songs.length){tracks.textContent='Nenhuma música adicionada ainda. Selecione arquivos de áudio do seu celular.';return;}songs.forEach((s,i)=>{const row=document.createElement('div');row.className='track';const cover=document.createElement('div');cover.className='cover';cover.textContent='♫';const info=document.createElement('div');info.className='trackinfo';const b=document.createElement('b');b.textContent=s.file.name.replace(/\.[^.]+$/,'');const small=document.createElement('small');small.textContent='Arquivo do dispositivo';info.append(b,small);const btn=document.createElement('button');btn.textContent='▶';btn.onclick=()=>play(i);row.append(cover,info,btn);tracks.append(row);});}
-function play(i){current=i;audio.src=songs[i].url;audio.play();document.getElementById('player').style.display='block';document.getElementById('nowTitle').textContent=songs[i].file.name;document.getElementById('nowSub').textContent='DA SUA BIBLIOTECA';document.getElementById('playPause').textContent='Ⅱ';document.getElementById('recent').textContent=songs[i].file.name;}
-document.getElementById('playPause').onclick=()=>{if(audio.paused){audio.play();document.getElementById('playPause').textContent='Ⅱ';}else{audio.pause();document.getElementById('playPause').textContent='▶';}};
-audio.ontimeupdate=()=>{if(audio.duration)document.getElementById('seek').value=audio.currentTime/audio.duration*100;};
-document.getElementById('seek').oninput=e=>{if(audio.duration)audio.currentTime=e.target.value/100*audio.duration;};
-document.querySelectorAll('nav button').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('main section').forEach(s=>s.hidden=s.id!==btn.dataset.tab);document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b===btn));});
-if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+(() => {
+  'use strict';
+  const DB_NAME = 'sonora-library-v2';
+  const STORE = 'tracks';
+  const bucketName = (window.SONORA_CONFIG && window.SONORA_CONFIG.bucket) || 'sonora-musicas';
+  const config = window.SONORA_CONFIG || {};
+  const audio = document.getElementById('audio');
+  const fileInputs = [document.getElementById('audioHome'), document.getElementById('audioLibrary')];
+  const status = document.getElementById('libraryStatus');
+  let db = null, client = null, user = null, localSongs = [], cloudSongs = [], activeTrack = null, activeUrl = null, recentName = '', authMode = 'login';
+
+  function setStatus(node, message, kind) { node.textContent = message || ''; node.className = 'status' + (kind ? ' ' + kind : ''); }
+  function openDatabase() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, 1);
+      request.onupgradeneeded = () => { if (!request.result.objectStoreNames.contains(STORE)) request.result.createObjectStore(STORE, { keyPath: 'id' }); };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+  function saveLocal(song) {
+    if (!db) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const request = db.transaction(STORE, 'readwrite').objectStore(STORE).put({ id: song.id, name: song.name, file: song.file });
+      request.onsuccess = () => resolve(); request.onerror = () => reject(request.error);
+    });
+  }
+  function loadLocal() {
+    if (!db) return Promise.resolve([]);
+    return new Promise((resolve, reject) => {
+      const request = db.transaction(STORE, 'readonly').objectStore(STORE).getAll();
+      request.onsuccess = () => resolve(request.result || []); request.onerror = () => reject(request.error);
+    });
+  }
+  function fileLooksAudio(file) { return (file.type || '').startsWith('audio/') || /\.(mp3|m4a|aac|ogg|opus|wav|flac|webm)$/i.test(file.name); }
+  function safeFileName(name) { return name.replace(/[\\/]/g, '_').replace(/[\u0000-\u001f]/g, '').slice(0, 180) || 'musica'; }
+  function cloudId(item) { return item.name.split('__', 1)[0]; }
+  function cloudTitle(item) { return item.name.includes('__') ? item.name.slice(item.name.indexOf('__') + 2) : item.name; }
+  function allSongs() {
+    const byId = new Map(cloudSongs.map(song => [song.id, song]));
+    for (const local of localSongs) {
+      const cloud = byId.get(local.id);
+      byId.set(local.id, cloud ? Object.assign({}, cloud, { file: local.file, local: true }) : Object.assign({}, local, { local: true, cloud: false }));
+    }
+    return Array.from(byId.values());
+  }
+  function render() {
+    const songs = allSongs();
+    document.getElementById('songCount').textContent = String(songs.length);
+    document.getElementById('libraryMode').textContent = user ? 'SINCRONIZADA' : 'LOCAL';
+    document.getElementById('recent').textContent = recentName || 'Suas músicas tocadas aparecerão aqui.';
+    document.getElementById('recent').className = recentName ? 'track' : 'empty';
+    const list = document.getElementById('tracks');
+    list.replaceChildren();
+    if (!songs.length) { list.className = 'empty'; list.textContent = 'Nenhuma música adicionada ainda. Escolha arquivos de áudio do seu aparelho.'; }
+    else {
+      list.className = '';
+      for (const song of songs) {
+        const row = document.createElement('div'); row.className = 'track';
+        const cover = document.createElement('div'); cover.className = 'cover'; cover.textContent = '♫';
+        const info = document.createElement('div'); info.className = 'trackinfo';
+        const title = document.createElement('b'); title.textContent = song.name;
+        const sub = document.createElement('small'); sub.textContent = song.local ? (song.cloud ? 'Salva neste aparelho e na conta' : 'Salva neste aparelho · offline') : 'Conta privada · requer internet';
+        info.append(title, sub);
+        const play = document.createElement('button'); play.type = 'button'; play.className = 'secondary'; play.textContent = '▶'; play.setAttribute('aria-label', 'Tocar ' + song.name); play.addEventListener('click', () => playSong(song));
+        row.append(cover, info, play); list.append(row);
+      }
+    }
+    document.getElementById('syncLocal').hidden = !user || !localSongs.some(song => !cloudSongs.some(cloud => cloud.id === song.id));
+  }
+  function accountUI() {
+    document.getElementById('useremail').textContent = user ? user.email : '';
+    document.getElementById('accountButton').textContent = user ? 'Minha conta' : 'Entrar';
+    document.getElementById('authForm').hidden = !!user || !client;
+    document.getElementById('signOut').hidden = !user;
+    const hint = document.getElementById('configHint');
+    if (!client) hint.textContent = 'Para ativar contas e biblioteca na nuvem, preencha config.js e prepare o projeto Supabase conforme LEIA-ME.txt. Sua biblioteca local continua funcionando.';
+    else if (user) hint.textContent = 'Conectada como ' + user.email + '. Os arquivos enviados ficam privados nesta conta.';
+    else hint.textContent = 'Entre ou crie uma conta para sincronizar músicas entre seus aparelhos.';
+    document.getElementById('syncLocal').hidden = !user || !localSongs.some(song => !cloudSongs.some(cloud => cloud.id === song.id));
+  }
+  async function refreshCloud() {
+    if (!client || !user) return;
+    const { data, error } = await client.storage.from(bucketName).list(user.id, { limit: 100, sortBy: { column: 'name', order: 'asc' } });
+    if (error) throw error;
+    cloudSongs = (data || []).filter(item => item.name && item.name.includes('__')).map(item => ({ id: cloudId(item), name: cloudTitle(item), path: user.id + '/' + item.name, cloud: true, local: false }));
+    render(); accountUI();
+  }
+  async function uploadSong(song) {
+    if (!client || !user) return false;
+    const path = user.id + '/' + song.id + '__' + safeFileName(song.name);
+    const { error } = await client.storage.from(bucketName).upload(path, song.file, { contentType: song.file.type || 'application/octet-stream', upsert: false });
+    if (error && !/already exists/i.test(error.message || '')) throw error;
+    return true;
+  }
+  async function addFiles(fileList) {
+    const files = Array.from(fileList || []).filter(fileLooksAudio);
+    if (!files.length) { setStatus(status, 'Escolha arquivos de áudio, como MP3, M4A ou WAV.', 'error'); return; }
+    setStatus(status, 'Salvando músicas neste aparelho…');
+    for (const file of files) {
+      const song = { id: crypto.randomUUID(), name: file.name.replace(/\.[^.]+$/, ''), file };
+      localSongs.push(song);
+      try { await saveLocal(song); } catch (_) { setStatus(status, 'O navegador não conseguiu guardar os arquivos para uso offline.'); }
+    }
+    render();
+    if (user && client) {
+      let uploaded = 0;
+      for (const song of files.map((file, i) => localSongs[localSongs.length - files.length + i])) {
+        try { await uploadSong(song); uploaded++; }
+        catch (error) { setStatus(status, 'Música salva neste aparelho; falhou o envio à conta: ' + error.message, 'error'); }
+      }
+      try { await refreshCloud(); } catch (error) { setStatus(status, 'Envio concluído, mas não consegui atualizar a biblioteca: ' + error.message, 'error'); }
+      if (uploaded) setStatus(status, uploaded + ' música(s) enviada(s) à sua conta e guardada(s) neste aparelho.', 'ok');
+    } else if (!client) setStatus(status, 'Músicas salvas neste aparelho. Configure a conta para sincronizar pela nuvem.', 'ok');
+    else setStatus(status, 'Músicas salvas neste aparelho. Entre na conta para enviá-las também à nuvem.', 'ok');
+  }
+  async function syncLocal() {
+    if (!user || !client) return;
+    const missing = localSongs.filter(song => !cloudSongs.some(cloud => cloud.id === song.id));
+    let sent = 0;
+    for (const song of missing) {
+      setStatus(status, 'Enviando ' + (sent + 1) + ' de ' + missing.length + '…');
+      try { await uploadSong(song); sent++; }
+      catch (error) { setStatus(status, 'Envio interrompido: ' + error.message, 'error'); break; }
+    }
+    try { await refreshCloud(); } catch (error) { setStatus(status, error.message, 'error'); return; }
+    setStatus(status, sent ? sent + ' música(s) adicionada(s) à conta.' : 'As músicas deste aparelho já estão na conta.', 'ok');
+  }
+  async function playSong(song) {
+    try {
+      if (activeUrl) URL.revokeObjectURL(activeUrl);
+      if (song.file) activeUrl = URL.createObjectURL(song.file);
+      else {
+        if (!client || !user) throw new Error('Entre na conta para ouvir esta música.');
+        setStatus(status, 'Carregando música da nuvem…');
+        const { data, error } = await client.storage.from(bucketName).download(song.path);
+        if (error) throw error;
+        activeUrl = URL.createObjectURL(data);
+      }
+      activeTrack = song; audio.src = activeUrl; await audio.play();
+      document.getElementById('player').style.display = 'block';
+      document.getElementById('nowTitle').textContent = song.name;
+      document.getElementById('nowSub').textContent = song.local ? 'SUA BIBLIOTECA · OFFLINE' : 'SUA CONTA PRIVADA';
+      document.getElementById('playPause').textContent = 'Ⅱ';
+      recentName = song.name; render(); setStatus(status, '');
+    } catch (error) { setStatus(status, 'Não consegui tocar esta música: ' + error.message, 'error'); }
+  }
+  function stopCloudAudio() {
+    if (activeTrack && !activeTrack.local) { audio.pause(); audio.removeAttribute('src'); audio.load(); if (activeUrl) URL.revokeObjectURL(activeUrl); activeUrl = null; activeTrack = null; document.getElementById('player').style.display = 'none'; }
+  }
+  function setupClient() {
+    const valid = /^https:\/\//.test(config.supabaseUrl || '') && /^(sb_publishable_|eyJ)/.test(config.supabaseAnonKey || '');
+    if (!valid || !window.supabase || typeof window.supabase.createClient !== 'function') { accountUI(); return; }
+    client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+    client.auth.onAuthStateChange((_event, session) => {
+      user = session ? session.user : null;
+      if (!user) { cloudSongs = []; stopCloudAudio(); render(); accountUI(); return; }
+      accountUI();
+      setTimeout(() => refreshCloud().catch(error => setStatus(status, 'Não consegui carregar sua biblioteca: ' + error.message, 'error')), 0);
+    });
+    client.auth.getSession().then(({ data, error }) => {
+      if (error) throw error;
+      user = data.session ? data.session.user : null; accountUI();
+      if (user) refreshCloud().catch(error2 => setStatus(status, 'Não consegui carregar sua biblioteca: ' + error2.message, 'error'));
+    }).catch(error => setStatus(document.getElementById('authMessage'), 'Erro ao abrir a conta: ' + error.message, 'error'));
+  }
+  document.getElementById('accountButton').addEventListener('click', () => showTab('account'));
+  function showTab(id) {
+    document.querySelectorAll('main section').forEach(section => { section.hidden = section.id !== id; });
+    document.querySelectorAll('nav button').forEach(button => button.classList.toggle('active', button.dataset.tab === id));
+  }
+  document.querySelectorAll('nav button').forEach(button => button.addEventListener('click', () => showTab(button.dataset.tab)));
+  fileInputs.forEach(input => input.addEventListener('change', async event => { await addFiles(event.target.files); input.value = ''; }));
+  document.getElementById('syncLocal').addEventListener('click', syncLocal);
+  document.getElementById('modeAuth').addEventListener('click', () => {
+    authMode = authMode === 'login' ? 'signup' : 'login';
+    document.getElementById('submitAuth').textContent = authMode === 'login' ? 'Entrar' : 'Criar conta';
+    document.getElementById('modeAuth').textContent = authMode === 'login' ? 'Criar conta' : 'Já tenho conta';
+    document.getElementById('password').autocomplete = authMode === 'login' ? 'current-password' : 'new-password';
+    setStatus(document.getElementById('authMessage'), '');
+  });
+  document.getElementById('authForm').addEventListener('submit', async event => {
+    event.preventDefault(); if (!client) return;
+    const email = document.getElementById('email').value.trim();
+    const passwordInput = document.getElementById('password');
+    const password = passwordInput.value;
+    const button = document.getElementById('submitAuth'); button.disabled = true;
+    setStatus(document.getElementById('authMessage'), authMode === 'login' ? 'Entrando…' : 'Criando conta…');
+    try {
+      const result = authMode === 'login'
+        ? await client.auth.signInWithPassword({ email, password })
+        : await client.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname } });
+      if (result.error) throw result.error;
+      if (authMode === 'signup' && !result.data.session) setStatus(document.getElementById('authMessage'), 'Conta criada. Confirme o e-mail pelo link enviado para entrar.', 'ok');
+      else setStatus(document.getElementById('authMessage'), 'Conta conectada.', 'ok');
+      passwordInput.value = '';
+    } catch (error) { setStatus(document.getElementById('authMessage'), 'Não deu para concluir: ' + error.message, 'error'); }
+    finally { button.disabled = false; }
+  });
+  document.getElementById('signOut').addEventListener('click', async () => {
+    const { error } = await client.auth.signOut();
+    if (error) setStatus(document.getElementById('authMessage'), 'Não consegui sair: ' + error.message, 'error');
+    else setStatus(document.getElementById('authMessage'), 'Você saiu da conta.');
+  });
+  document.getElementById('playPause').addEventListener('click', async () => {
+    if (audio.paused) { try { await audio.play(); document.getElementById('playPause').textContent = 'Ⅱ'; } catch (error) { setStatus(status, error.message, 'error'); } }
+    else { audio.pause(); document.getElementById('playPause').textContent = '▶'; }
+  });
+  audio.ontimeupdate = () => { if (audio.duration) document.getElementById('seek').value = String(audio.currentTime / audio.duration * 100); };
+  document.getElementById('seek').addEventListener('input', event => { if (audio.duration) audio.currentTime = Number(event.target.value) / 100 * audio.duration; });
+  audio.onended = () => { document.getElementById('playPause').textContent = '▶'; };
+
+  openDatabase().then(async database => {
+    db = database;
+    const saved = await loadLocal();
+    localSongs = saved.map(item => ({ id: item.id, name: item.name, file: item.file, local: true }));
+    render();
+  }).catch(() => setStatus(status, 'Armazenamento offline indisponível neste navegador; use a conta para guardar músicas na nuvem.', 'error'));
+  setupClient();
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(() => {});
+})();
 </script>
-</body></html>
+</body>
+</html>
