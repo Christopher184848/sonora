@@ -30,7 +30,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#17161df2;backdrop-filter:
   <h2>Tocada recentemente</h2><div id="recent" class="empty">Suas músicas tocadas aparecerão aqui.</div>
 </section>
 <section id="library" hidden><h2>Sua biblioteca</h2><div class="row"><label class="filelabel" for="audioLibrary">＋ Adicionar músicas</label><input id="audioLibrary" type="file" accept="audio/*,.mp3,.m4a,.aac,.ogg,.opus,.wav,.flac,.webm" multiple><button class="secondary" id="syncLocal" type="button" hidden>Enviar músicas deste aparelho</button></div><p class="notice" id="libraryHelp">Arquivos adicionados ficam guardados neste aparelho. Ao entrar na conta, os próximos arquivos também são enviados para sua biblioteca privada.</p><div id="tracks" style="margin-top:15px" class="empty">Nenhuma música adicionada ainda. Escolha arquivos de áudio do seu aparelho.</div><div id="libraryStatus" class="status" role="status" aria-live="polite"></div></section>
-<section id="account" hidden><h2>Conta SONORA</h2><div class="panel"><p id="configHint" class="notice">Faça login ou crie uma conta para sincronizar suas músicas.</p><form id="authForm"><label class="field" for="email">E-mail</label><input id="email" type="email" autocomplete="email" required><label class="field" for="password">Senha</label><input id="password" type="password" autocomplete="current-password" minlength="8" required><div class="row"><button id="submitAuth" type="submit">Entrar</button><button id="modeAuth" class="secondary" type="button">Criar conta</button></div></form><div id="authMessage" class="status" role="status" aria-live="polite"></div><button id="signOut" class="secondary" type="button" hidden>Sair da conta</button></div></section>
+<section id="account" hidden><h2>Conta SONORA</h2><div class="panel"><p id="configHint" class="notice">Faça login ou crie uma conta para sincronizar suas músicas.</p><form id="authForm"><label class="field" for="email">E-mail</label><input id="email" type="email" autocomplete="email" required><label class="field" for="password">Senha</label><input id="password" type="password" autocomplete="current-password" minlength="8" required><div class="row"><button id="submitAuth" type="submit">Entrar</button><button id="modeAuth" class="secondary" type="button">Criar conta</button></div></form><div id="authMessage" class="status" role="status" aria-live="polite"></div><button id="resendConfirmation" class="secondary smallbtn" type="button" hidden>Reenviar confirmação do e-mail</button><button id="signOut" class="secondary" type="button" hidden>Sair da conta</button></div></section>
 <section id="youtube" hidden><h2>Explorar no YouTube</h2><div class="empty">O SONORA não baixa áudio de vídeos protegidos. Abra o YouTube e use os recursos oficiais quando disponíveis.</div><p><a href="https://m.youtube.com/" target="_blank" rel="noopener noreferrer">Abrir YouTube</a></p></section>
 </main>
 <div class="player" id="player"><div class="player-top"><div class="cover">♫</div><div class="player-title"><b id="nowTitle">Nenhuma música</b><small id="nowSub">SONORA PLAYER</small></div><button class="secondary" id="playPause" type="button" aria-label="Reproduzir ou pausar">▶</button></div><input id="seek" type="range" min="0" max="100" value="0" aria-label="Posição da música"></div>
@@ -111,7 +111,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#17161df2;backdrop-filter:
     document.getElementById('useremail').textContent = user ? user.email : '';
     document.getElementById('accountButton').textContent = user ? 'Minha conta' : 'Entrar';
     document.getElementById('authForm').hidden = !!user || !client;
-    document.getElementById('signOut').hidden = !user;
+    document.getElementById('signOut').hidden = !user; document.getElementById('resendConfirmation').hidden = !client || !!user;
     const hint = document.getElementById('configHint');
     if (!client) hint.textContent = 'Para ativar contas e biblioteca na nuvem, preencha config.js e prepare o projeto Supabase conforme LEIA-ME.txt. Sua biblioteca local continua funcionando.';
     else if (user) hint.textContent = 'Conectada como ' + user.email + '. Os arquivos enviados ficam privados nesta conta.';
@@ -216,7 +216,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#17161df2;backdrop-filter:
     document.getElementById('submitAuth').textContent = authMode === 'login' ? 'Entrar' : 'Criar conta';
     document.getElementById('modeAuth').textContent = authMode === 'login' ? 'Criar conta' : 'Já tenho conta';
     document.getElementById('password').autocomplete = authMode === 'login' ? 'current-password' : 'new-password';
-    setStatus(document.getElementById('authMessage'), '');
+    setStatus(document.getElementById('authMessage'), ''); document.getElementById('resendConfirmation').hidden = true;
   });
   document.getElementById('authForm').addEventListener('submit', async event => {
     event.preventDefault(); if (!client) return;
@@ -230,13 +230,13 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#17161df2;backdrop-filter:
         ? await client.auth.signInWithPassword({ email, password })
         : await client.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname } });
       if (result.error) throw result.error;
-      if (authMode === 'signup' && !result.data.session) setStatus(document.getElementById('authMessage'), 'Conta criada. Confirme o e-mail pelo link enviado para entrar.', 'ok');
+      if (authMode === 'signup' && !result.data.session) { document.getElementById('resendConfirmation').hidden = false; setStatus(document.getElementById('authMessage'), 'Conta criada. Confirme o e-mail pelo link enviado para entrar.', 'ok'); }
       else setStatus(document.getElementById('authMessage'), 'Conta conectada.', 'ok');
       passwordInput.value = '';
-    } catch (error) { setStatus(document.getElementById('authMessage'), 'Não deu para concluir: ' + error.message, 'error'); }
+    } catch (error) { if (authMode === 'login' && /invalid login credentials|email not confirmed/i.test(error.message || '')) document.getElementById('resendConfirmation').hidden = false; setStatus(document.getElementById('authMessage'), 'Não deu para concluir: ' + error.message, 'error'); }
     finally { button.disabled = false; }
   });
-  document.getElementById('signOut').addEventListener('click', async () => {
+  document.getElementById('resendConfirmation').addEventListener('click', async event => { const email = document.getElementById('email').value.trim(); const message = document.getElementById('authMessage'); if (!email) { setStatus(message, 'Digite seu e-mail primeiro.', 'error'); document.getElementById('email').focus(); return; } const button = event.currentTarget; button.disabled = true; setStatus(message, 'Enviando um novo link…'); try { const { error } = await client.auth.resend({ type: 'signup', email, options: { emailRedirectTo: location.origin + location.pathname } }); if (error) throw error; setStatus(message, 'Se houver uma confirmação pendente, enviaremos um novo link. Confira a caixa de entrada e o spam.', 'ok'); } catch (error) { setStatus(message, 'Não consegui reenviar: ' + error.message, 'error'); } finally { button.disabled = false; } }); document.getElementById('signOut').addEventListener('click', async () => {
     const { error } = await client.auth.signOut();
     if (error) setStatus(document.getElementById('authMessage'), 'Não consegui sair: ' + error.message, 'error');
     else setStatus(document.getElementById('authMessage'), 'Você saiu da conta.');
@@ -255,7 +255,7 @@ nav{position:fixed;bottom:0;left:0;right:0;background:#17161df2;backdrop-filter:
     localSongs = saved.map(item => ({ id: item.id, name: item.name, file: item.file, local: true }));
     render();
   }).catch(() => setStatus(status, 'Armazenamento offline indisponível neste navegador; use a conta para guardar músicas na nuvem.', 'error'));
-  setupClient();
+  const confirmationError = new URLSearchParams(location.hash.replace(/^#/, '')); const expiredConfirmation = confirmationError.get('error_code') === 'otp_expired'; if (expiredConfirmation) { showTab('account'); history.replaceState(null, '', location.pathname + location.search); } setupClient(); if (expiredConfirmation) { document.getElementById('resendConfirmation').hidden = !client; setStatus(document.getElementById('authMessage'), 'O link de confirmação venceu. Digite seu e-mail e toque em “Reenviar confirmação do e-mail”.', 'error'); }
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(() => {});
 })();
 </script>
