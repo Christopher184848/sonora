@@ -1,4 +1,4 @@
-const CACHE = 'sonora-v2';
+const CACHE = 'sonora-v3';
 const SHELL = ['./', './index.html', './config.js', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', event => {
