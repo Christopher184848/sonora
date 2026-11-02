@@ -1,8 +1,7 @@
-// Preencha com Project URL e publishable/anon key do seu projeto Supabase.
-// Esta chave de cliente e publica por definicao; a protecao vem das politicas RLS.
-// Nunca coloque aqui a service_role key ou qualquer senha.
+// Chave publishable do projeto Supabase SONORA; pode ficar no navegador.
+// Nunca use aqui uma service_role key, chave secreta ou senha.
 window.SONORA_CONFIG = {
-  supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabaseUrl: "https://usniyhwcniykizncwfvj.supabase.co",
+  supabaseAnonKey: "sb_publishable_KfQRzMHFOTQT8al6sIzxsQ_G8ME1kOe",
   bucket: "sonora-musicas"
 };
