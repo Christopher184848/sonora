@@ -1,0 +1,11 @@
+{
+  "name": "SONORA - Music Player",
+  "short_name": "SONORA",
+  "description": "Sua música, do seu jeito.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101014",
+  "theme_color": "#101014",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}

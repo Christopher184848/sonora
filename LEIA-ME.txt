@@ -1,0 +1,17 @@
+SONORA — primeira versão PWA
+
+O que já funciona:
+- Interface adaptada para celular.
+- Seleção de arquivos de áudio do dispositivo.
+- Reprodução, pausa e busca na faixa.
+- Biblioteca temporária durante a sessão.
+- Estrutura PWA com manifest e service worker para instalação/offline do app shell.
+
+Limitações desta versão:
+- Os arquivos escolhidos pelo seletor não são copiados para armazenamento permanente do app; selecione-os novamente após fechar/reabrir.
+- Ainda não há playlists persistentes, importação de pastas ou controle de reprodução em tela bloqueada garantido.
+- YouTube abre pelo serviço oficial. Não há download de áudio de vídeos protegidos.
+- Para instalar como PWA, publique esta pasta em um endereço HTTPS (por exemplo, GitHub Pages). Abrir index.html como arquivo local não habilita service worker/instalação PWA.
+
+Próximo passo:
+Hospedar a pasta em HTTPS e abrir o link no Chrome Android. No menu ⋮, escolha "Instalar app" ou "Adicionar à tela inicial".

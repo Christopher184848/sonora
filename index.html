@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101014">
+<meta name="description" content="SONORA — sua música, do seu jeito.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>SONORA</title>
+<style>
+:root{color-scheme:dark;--bg:#101014;--panel:#1b1a22;--muted:#a6a2b2;--purple:#a78bfa;--line:#302d39}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font:15px system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top) 16px calc(110px + env(safe-area-inset-bottom));}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 2px 22px}.brand{font-size:25px;font-weight:900;letter-spacing:2px}.brand span{color:var(--purple)}.tag{font-size:10px;color:var(--muted);letter-spacing:2px}
+h2{font-size:18px;margin:26px 0 12px}.hero{padding:20px;border-radius:22px;background:linear-gradient(135deg,#33234f,#17151f 70%);border:1px solid #4b3a69}.hero small{color:#d1c5ef}.hero h1{font-size:25px;line-height:1.15;margin:9px 0}.hero p{color:#d0c9dc;margin:0 0 16px}
+button,.filelabel{border:0;border-radius:14px;background:var(--purple);color:#171221;padding:12px 16px;font-weight:750;font-size:14px;cursor:pointer}.secondary{background:#302b3b;color:white;border:1px solid #484153}.row{display:flex;gap:10px;align-items:center}.row>*{flex:1}.stats{display:flex;gap:10px;margin-top:15px}.stat{background:#17161d;padding:12px;border:1px solid var(--line);border-radius:14px;flex:1}.stat b{display:block;font-size:18px}.stat span{color:var(--muted);font-size:11px}
+.track{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);padding:11px;border-radius:15px;margin:8px 0}.cover{width:45px;height:45px;border-radius:10px;background:linear-gradient(135deg,#8c5de8,#29213b);display:grid;place-items:center;font-size:20px}.trackinfo{flex:1;min-width:0}.trackinfo b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trackinfo small{color:var(--muted)}.track button{padding:9px 12px;flex:0 0 auto}
+input[type=file]{display:none}.empty{color:var(--muted);font-size:13px;line-height:1.5;padding:15px;background:#17161d;border:1px dashed #454050;border-radius:14px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#17161df2;backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:12px 8px calc(12px + env(safe-area-inset-bottom));z-index:5}nav button{background:transparent;color:var(--muted);padding:7px;font-size:12px}nav button.active{color:var(--purple)}
+.player{position:fixed;bottom:72px;left:10px;right:10px;background:#292435;border:1px solid #514568;border-radius:16px;padding:10px 13px;display:none;z-index:4}.player-top{display:flex;align-items:center;gap:10px}.player-title{flex:1;min-width:0}.player-title b,.player-title small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.player-title small{color:var(--muted)}.player button{padding:8px 11px}.player input{width:100%;accent-color:var(--purple);margin-top:8px}
+section[hidden]{display:none}
+a{color:#c9b5ff}
+</style>
+</head>
+<body>
+<header><div><div class="brand">SONO<span>RA</span></div><div class="tag">YOUR MUSIC. YOUR WORLD.</div></div><div aria-label="Áudio">♫</div></header>
+<main>
+<section id="home">
+ <div class="hero"><small>BEM-VINDO AO SEU ESPAÇO</small><h1>Suas músicas.<br>Do seu jeito.</h1><p>Uma biblioteca simples para ouvir seus próprios arquivos, até sem internet.</p><label class="filelabel" for="audioFiles">＋ Adicionar músicas</label><input id="audioFiles" type="file" accept="audio/*" multiple></div>
+ <div class="stats"><div class="stat"><b id="songCount">0</b><span>MÚSICAS</span></div><div class="stat"><b>LOCAL</b><span>SUA BIBLIOTECA</span></div></div>
+ <h2>Tocados recentemente</h2><div id="recent" class="empty">Suas músicas tocadas aparecerão aqui.</div>
+</section>
+<section id="library" hidden><h2>Sua biblioteca</h2><label class="filelabel" for="audioFiles2">＋ Adicionar músicas</label><input id="audioFiles2" type="file" accept="audio/*" multiple><div id="tracks" style="margin-top:15px" class="empty">Nenhuma música adicionada ainda. Selecione arquivos de áudio do seu celular.</div></section>
+<section id="youtube" hidden><h2>Explorar no YouTube</h2><div class="empty">A pesquisa e reprodução de vídeos do YouTube precisam usar os recursos oficiais do YouTube. Esta primeira versão não baixa áudio de vídeos protegidos. Você pode abrir o YouTube e salvar conteúdo offline quando o próprio serviço oferecer essa opção.</div><p><a href="https://m.youtube.com/" target="_blank" rel="noopener">Abrir YouTube</a></p></section>
+</main>
+<div class="player" id="player"><div class="player-top"><div class="cover">♫</div><div class="player-title"><b id="nowTitle">Nenhuma música</b><small id="nowSub">SONORA PLAYER</small></div><button class="secondary" id="playPause">▶</button></div><input id="seek" type="range" min="0" max="100" value="0"></div>
+<audio id="audio"></audio>
+<nav><button class="active" data-tab="home">⌂<br>Início</button><button data-tab="library">♫<br>Biblioteca</button><button data-tab="youtube">◉<br>YouTube</button></nav>
+<script>
+const audio=document.getElementById('audio'), filesInput=[document.getElementById('audioFiles'),document.getElementById('audioFiles2')];
+let songs=[],current=-1;
+function addFiles(list){for(const f of list){if(f.type.startsWith('audio/'))songs.push({file:f,url:URL.createObjectURL(f)});}render();}
+filesInput.forEach(el=>el.addEventListener('change',e=>addFiles(e.target.files)));
+function render(){document.getElementById('songCount').textContent=songs.length;const tracks=document.getElementById('tracks');tracks.className=songs.length?'':'empty';tracks.innerHTML='';if(!songs.length){tracks.textContent='Nenhuma música adicionada ainda. Selecione arquivos de áudio do seu celular.';return;}songs.forEach((s,i)=>{const row=document.createElement('div');row.className='track';const cover=document.createElement('div');cover.className='cover';cover.textContent='♫';const info=document.createElement('div');info.className='trackinfo';const b=document.createElement('b');b.textContent=s.file.name.replace(/\.[^.]+$/,'');const small=document.createElement('small');small.textContent='Arquivo do dispositivo';info.append(b,small);const btn=document.createElement('button');btn.textContent='▶';btn.onclick=()=>play(i);row.append(cover,info,btn);tracks.append(row);});}
+function play(i){current=i;audio.src=songs[i].url;audio.play();document.getElementById('player').style.display='block';document.getElementById('nowTitle').textContent=songs[i].file.name;document.getElementById('nowSub').textContent='DA SUA BIBLIOTECA';document.getElementById('playPause').textContent='Ⅱ';document.getElementById('recent').textContent=songs[i].file.name;}
+document.getElementById('playPause').onclick=()=>{if(audio.paused){audio.play();document.getElementById('playPause').textContent='Ⅱ';}else{audio.pause();document.getElementById('playPause').textContent='▶';}};
+audio.ontimeupdate=()=>{if(audio.duration)document.getElementById('seek').value=audio.currentTime/audio.duration*100;};
+document.getElementById('seek').oninput=e=>{if(audio.duration)audio.currentTime=e.target.value/100*audio.duration;};
+document.querySelectorAll('nav button').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('main section').forEach(s=>s.hidden=s.id!==btn.dataset.tab);document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b===btn));});
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
